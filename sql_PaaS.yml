@@ -30,19 +30,15 @@
       register: firewall_result
     - debug:
         var: firewall_result
-    - name: Create contained user mapped to Azure AD identity
-      command: >
-       sqlcmd -S {{ sqlserver }}.database.windows.net 
-              -d {{ manulife_db }} 
-              -U {{ admin }} 
-              -P {{ password }} 
-              -Q "CREATE USER [{{ azure_ad_username }}] FROM EXTERNAL PROVIDER;"
-      register: result
-    - name: Display result
-      debug:
-       var: result.stdout_lines 
-
         
+    - name: Disable Allow Azure services to access SQL Server
+      azure_rm_sqlserver_facts:
+        resource_group: your_resource_group
+        name: your_sql_server_name
+        expand: "firewallRules"
+      register: sql_server_facts
+    - debug: 
+        var: sql_server_facts
 
   vars: 
     admin: student
