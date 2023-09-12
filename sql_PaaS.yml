@@ -30,15 +30,29 @@
       register: firewall_result
     - debug:
         var: firewall_result
-        
-    - name: Disable Allow Azure services to access SQL Server
-      azure_rm_sqlserver_facts:
+       # Create a private endpoint
+       
+    - name: Create private endpoint for SQL Database
+      azure_rm_privateendpoint:
         resource_group: "{{ resourcegroup }}"
-        name: "{{ sqlserver }}"
-        expand: "firewallRules"
-      register: sql_server_facts
-    - debug: 
-        var: sql_server_facts
+        name: manulifeendpoint
+        location: :{{ location }}"
+        private_link_service_connection:
+          name: plsc_sql_db
+          is_manual_connection: no
+          private_link_service_id: "/subscriptions/{{ your_subscription_id }}/resourceGroups/{{ resourcegroup }}/providers/Microsoft.Sql/servers/{{ sqlserver }}/databases/{{ sqldb }}"
+          group_ids:
+            - "sqlServerDatabases"
+
+    # Associate private endpoint with DNS zone
+    - name: Create a private DNS zone link
+      azure_rm_privatednszonelink:
+        resource_group: "{{ resourcegroup }}"
+        zone_name: privatelink.database.windows.net
+        name: manulifezone
+        virtual_network: manulifenw
+        registration_enabled: yes
+        etag: your_etag    
 
   vars: 
     admin: student
@@ -48,3 +62,4 @@
     sqldb: manulife_db  
     sqlserver: manulifesqlserver
     azure_ad_username: alex
+    your_subscription_id: 6d1e140e-296e-42c1-b27a-26c101cc127f
