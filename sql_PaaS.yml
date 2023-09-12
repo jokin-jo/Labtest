@@ -21,6 +21,7 @@
         resource_group: "{{resourcegroup}}"
         server_name: "{{sqlserver}}"
       name: "Create Azure SQL Database"
+      
     - name: Configure Azure SQL Server firewall
       azure_rm_sqlfirewallrule:
         resource_group: "{{resourcegroup}}"
@@ -31,28 +32,35 @@
       register: firewall_result
     - debug:
         var: firewall_result
-       # Create a private endpoint
-       
-    - name: Create private endpoint
-      azure.azcollection.azure_rm_privateendpoint:
-       name: testprivateendpoint
-       resource_group: "{{ resourcegroup }}"
-       private_link_service_connections:
-         - name: Test_private_link_service
-           private_link_service_id: /subscriptions/6d1e140e-296e-42c1-b27a-26c101cc127f/resourceGroups/manulife_test_1/providers/Microsoft.Network/privateLinkServices/testervice
-       subnet:
-           id: /subscriptions/6d1e140e-296e-42c1-b27a-26c101cc127f/resourceGroups/manulife_test_1/providers/Microsoft.Network/virtualNetworks/fredvnet/subnets/default
+      
 
-    # Associate private endpoint with DNS zone
-    - name: Create a private DNS zone link
-      azure.azcollection.azure_rm_privatednszonelink:
+    - name: Deny all public access to SQL Server
+      azure_rm_sqlfirewallrule:
         resource_group: "{{ resourcegroup }}"
-        zone_name: privatelink.database.windows.net
-        name: manulifezone
-        virtual_network: manulifenw
-        registration_enabled: yes
-        etag: your_etag    
+        server_name: "{{ sqlserver }}"
+        name: "DenyAllPublicAccess"
+        start_ip_address: "0.0.0.0"
+        end_ip_address: "0.0.0.0"
+        state: present
 
+    # Disable Allow Azure services option
+    - name: Disable Allow Azure services to access SQL Server
+      azure_rm_sqlserver_facts:
+        resource_group: "{{ resourcegroup }}"
+        name: "{{ sqlserver }}"
+        expand: "firewallRules"
+      register: sql_server_facts
+
+    - name: Remove default firewall rule for Azure services
+      azure_rm_sqlfirewallrule:
+        resource_group: "{{ resourcegroup }}"
+        server_name: "{{ sqlserver }}"
+        name: "{{ item.name }}"
+        state: absent
+      loop: "{{ sql_server_facts.firewall_rules }}"
+      when: item.start_ip_address == '0.0.0.0' and item.end_ip_address == '0.0.0.0'   
+    
+          
   vars: 
     admin: student
     location: eastus
