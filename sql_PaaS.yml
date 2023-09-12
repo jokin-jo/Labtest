@@ -34,7 +34,7 @@
        # Create a private endpoint
        
     - name: Create private endpoint
-      azure_rm_privateendpoint:
+      azure.azcollection.azure_rm_privateendpoint:
        name: testprivateendpoint
        resource_group: "{{ resourcegroup }}"
        private_link_service_connections:
