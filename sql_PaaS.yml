@@ -47,7 +47,7 @@
     - name: Disable Allow Azure services to access SQL Server
       azure_rm_sqlserver_facts:
         resource_group: "{{ resourcegroup }}"
-        name: "{{ sqlserver }}"
+        server_name: "{{ sqlserver }}"
       register: sql_server_facts
 
     - name: Remove default firewall rule for Azure services
