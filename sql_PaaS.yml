@@ -40,7 +40,7 @@
        private_link_service_connections:
          - name: Test_private_link_service
            private_link_service_id: /subscriptions/6d1e140e-296e-42c1-b27a-26c101cc127f/resourceGroups/manulife_test_1/providers/Microsoft.Network/privateLinkServices/testervice
-           subnet:
+       subnet:
            id: /subscriptions/6d1e140e-296e-42c1-b27a-26c101cc127f/resourceGroups/manulife_test_1/providers/Microsoft.Network/virtualNetworks/fredvnet/subnets/default
 
     # Associate private endpoint with DNS zone
