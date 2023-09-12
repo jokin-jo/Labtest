@@ -33,7 +33,7 @@
        # Create a private endpoint
        
     - name: Create private endpoint for SQL Database
-      azure_rm_privateendpoint:
+      azure.azcollection.azure_rm_privateendpoint:
         resource_group: "{{ resourcegroup }}"
         name: manulifeendpoint
         location: :{{ location }}"
@@ -46,7 +46,7 @@
 
     # Associate private endpoint with DNS zone
     - name: Create a private DNS zone link
-      azure_rm_privatednszonelink:
+      azure.azcollection.azure_rm_privatednszonelink:
         resource_group: "{{ resourcegroup }}"
         zone_name: privatelink.database.windows.net
         name: manulifezone
