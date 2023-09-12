@@ -29,6 +29,19 @@
       register: firewall_result
     - debug:
         var: firewall_result
+    - name: Create contained user mapped to Azure AD identity
+      command: >
+       sqlcmd -S {{ sqlserver }}.database.windows.net 
+              -d {{ manulife_db }} 
+              -U {{ admin }} 
+              -P {{ password }} 
+              -Q "CREATE USER [{{ azure_ad_username }}] FROM EXTERNAL PROVIDER;"
+      register: result
+    - name: Display result
+      debug:
+       var: result.stdout_lines 
+
+        
 
   vars: 
     admin: student
