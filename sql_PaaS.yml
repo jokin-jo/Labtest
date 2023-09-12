@@ -33,17 +33,15 @@
         var: firewall_result
        # Create a private endpoint
        
-    - name: Create private endpoint for SQL Database
-      azure.azcollection.azure_rm_privateendpoint:
-        resource_group: "{{ resourcegroup }}"
-        name: manulifeendpoint
-        location: :{{ location }}"
-        private_link_service_connection:
-          name: plsc_sql_db
-          is_manual_connection: no
-          private_link_service_id: "/subscriptions/{{ your_subscription_id }}/resourceGroups/{{ resourcegroup }}/providers/Microsoft.Sql/servers/{{ sqlserver }}/databases/{{ sqldb }}"
-          group_ids:
-            - "sqlServerDatabases"
+    - name: Create private endpoint
+      azure_rm_privateendpoint:
+       name: testprivateendpoint
+       resource_group: "{{ resourcegroup }}"
+       private_link_service_connections:
+         - name: Test_private_link_service
+           private_link_service_id: /subscriptions/6d1e140e-296e-42c1-b27a-26c101cc127f/resourceGroups/manulife_test_1/providers/Microsoft.Network/privateLinkServices/testervice
+           subnet:
+           id: /subscriptions/6d1e140e-296e-42c1-b27a-26c101cc127f/resourceGroups/manulife_test_1/providers/Microsoft.Network/virtualNetworks/fredvnet/subnets/default
 
     # Associate private endpoint with DNS zone
     - name: Create a private DNS zone link
