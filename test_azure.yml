@@ -4,12 +4,8 @@
   tasks:
   
     - copy:
-        src: prod.repo
-        dest: /etc/yum.repos.d/mssql-release.repo
-
-    - dnf: 
-        name: sqlcmd
-        state: installed 
+        src: sqlcmd
+        dest: /usr/local/bin/
 
     - name: Test sqlcmd
       shell: sqlcmd --version
