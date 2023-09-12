@@ -1,6 +1,21 @@
 ---
 - hosts: localhost
+  become: true 
   tasks:
-   - azure_rm_resourcegroup:
-       name: manulife_test
-       location: centralindia
+  
+    - copy:
+        src: prod.repo
+        dest: /etc/yum.repos.d/mssql-release.repo
+
+    - yum: 
+        name: sqlcmd
+        state: installed 
+
+    - name: Test sqlcmd
+      shell: sqlcmd --version
+      register: version
+    
+    - name: Print the version
+      debug: 
+        var: version        
+  
