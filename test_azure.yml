@@ -7,7 +7,7 @@
         src: prod.repo
         dest: /etc/yum.repos.d/mssql-release.repo
 
-    - yum: 
+    - dnf: 
         name: sqlcmd
         state: installed 
 
