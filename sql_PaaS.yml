@@ -4,11 +4,11 @@
   tasks: 
 
   - name: Create Repo
-     command: curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo
-  - yum:
+    command: curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo
+  - ansible.builtin.yum:
       name: sqlcmd
       state: installed 
-    
+      
     - azure_rm_resourcegroup: 
         location: "{{location}}"
         name: "{{resourcegroup}}"
